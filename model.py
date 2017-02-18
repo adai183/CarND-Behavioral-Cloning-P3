@@ -1,11 +1,7 @@
 import numpy as np
 import pandas as pd
 import cv2
-from termcolor import colored
-import csv
 import math
-import random
-import os
 
 from keras.models import Sequential
 from keras.layers.core import Dense, Activation, Flatten, Dropout
@@ -14,6 +10,9 @@ from keras.layers.pooling import MaxPooling2D
 from keras.optimizers import Adam
 from keras.regularizers import l2
 from keras.callbacks import Callback, EarlyStopping
+
+from time import time
+start_time = time()
 
 
 # def get_memory_stats():
@@ -81,7 +80,8 @@ def generator(iterable, batch_size=512):
     for ndx in range(0, img_num, batch_size):
         batch = iterable.iloc[ndx:min(ndx + batch_size, img_num)]
 
-        yield process(batch)
+        images, steering_angles = process(batch)
+        yield (images, steering_angles)
 
 
 model = Sequential()
@@ -259,5 +259,15 @@ model.fit_generator(generator(measurements_train, batch_size=BATCH_SIZE),
                     pickle_safe=False,
                     initial_epoch=0)
 
+
+
 # #pred  = model.predict(X_test, batch_size=128)
 # #print("Test error: ", np.mean(np.square(pred-Y_test)))
+
+end_time = time()
+time_taken = end_time - start_time  # time_taken is in seconds
+
+hours, rest = divmod(time_taken, 3600)
+minutes, seconds = divmod(rest, 60)
+
+print ("Time: ", hours, "h, ", minutes, "min, ", seconds, "s ")
