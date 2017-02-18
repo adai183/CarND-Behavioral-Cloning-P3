@@ -13,7 +13,7 @@ from keras.layers.convolutional import Convolution2D
 from keras.layers.pooling import MaxPooling2D
 from keras.optimizers import Adam
 from keras.regularizers import l2
-from keras.callbacks import Callback
+from keras.callbacks import Callback, EarlyStopping
 
 
 # def get_memory_stats():
@@ -78,10 +78,10 @@ def generator(iterable, batch_size=512):
     # shuffle Data before creating batches
     iterable = iterable.sample(frac=1)
 
-    # for ndx in range(0, img_num, batch_size):
-    #     batch = iterable.iloc[ndx:min(ndx + batch_size, img_num)]
+    for ndx in range(0, img_num, batch_size):
+        batch = iterable.iloc[ndx:min(ndx + batch_size, img_num)]
 
-    yield iterable
+        yield process(batch)
 
 
 model = Sequential()
@@ -148,43 +148,43 @@ model.compile(optimizer=Adam(lr=LEARNING_RATE), loss='mse')
 print ('Model compiled.')
 
 
-# Keras callbacks for logging and early termination
-class History(Callback):
-    """
-    Takes care of logging
-    """
+# # Keras callbacks for logging and early termination
+# class History(Callback):
+#     """
+#     Takes care of logging
+#     """
 
-    def on_train_begin(self, logs={}):
-        self.val_losses = []
+#     def on_train_begin(self, logs={}):
+#         self.val_losses = []
 
-    def on_batch_end(self, batch, logs={}):
-        loss_temp = logs.get('loss')
-        val_loss_temp = logs.get('val_loss')
+#     def on_batch_end(self, batch, logs={}):
+#         loss_temp = logs.get('loss')
+#         val_loss_temp = logs.get('val_loss')
 
-        # save stats to csv
-        with open("stats.csv", "a") as csv_file:
-            data = [epoch_i, loss_temp, val_loss_temp]
-            writer = csv.writer(csv_file, delimiter=',')
-            writer.writerow(data)
+#         # save stats to csv
+#         with open("stats.csv", "a") as csv_file:
+#             data = [epoch_i, loss_temp, val_loss_temp]
+#             writer = csv.writer(csv_file, delimiter=',')
+#             writer.writerow(data)
 
-        # # log stats
-        # print ('Epoch {}  :  Batch {}/{}'.format(
-        #     epoch_i + 1, batch_i, batch_num))
-        # print ('Loss:{}  Validation Loss:{}'.format(
-        #     loss_temp, val_loss_temp))
+#         # # log stats
+#         # print ('Epoch {}  :  Batch {}/{}'.format(
+#         #     epoch_i + 1, batch_i, batch_num))
+#         # print ('Loss:{}  Validation Loss:{}'.format(
+#         #     loss_temp, val_loss_temp))
 
-        # save validation loss after every epoch for early termination
-        # if batch_i == batch_num - 1:
-        #     self.val_losses.append(val_loss_temp)
+#         # save validation loss after every epoch for early termination
+#         # if batch_i == batch_num - 1:
+#         #     self.val_losses.append(val_loss_temp)
 
-    def on_epoch_end(self, epoch, logs={}):
-        self.val_losses.append(logs.get('val_loss'))
-        if len(self.val_losses) >= 2:
-            gain = self.val_losses[-2] - self.val_losses[-1]
-            print ('Validation Gain: {}'.format(gain))
-            if gain < DELTA:
-                print (colored('Early Termination !!!', 'red'))
-                quit()
+#     def on_epoch_end(self, epoch, logs={}):
+#         self.val_losses.append(logs.get('val_loss'))
+#         if len(self.val_losses) >= 2:
+#             gain = self.val_losses[-2] - self.val_losses[-1]
+#             print ('Validation Gain: {}'.format(gain))
+#             if gain < DELTA:
+#                 print (colored('Early Termination !!!', 'red'))
+#                 quit()
 
 # with open('model.json', 'w') as outfile:
 #     outfile.write(model.to_json())
@@ -193,9 +193,9 @@ class History(Callback):
 # model.load_weights("model.h5")
 
 
-# # Load validation data
-# measurements_valid = pd.DataFrame.from_csv('Data/valid_data.csv')
-# X_valid, y_valid = process(measurements_valid)
+# Load validation data
+measurements_valid = pd.DataFrame.from_csv('Data/valid_data.csv')
+X_valid, y_valid = process(measurements_valid)
 
 # Load Dataframe for training data
 measurements_train = pd.DataFrame.from_csv('Data/train_data.csv')
@@ -205,37 +205,59 @@ batch_num = math.ceil(measurements_train.shape[0] / BATCH_SIZE)
 val_losses = []
 gain = 0
 
-for epoch_i in range(EPOCHS_NUM):
+# for epoch_i in range(EPOCHS_NUM):
 
-    print (colored('Start epoch: {}/{}'.format(epoch_i + 1, EPOCHS_NUM), 'cyan'))
+# print (colored('Start epoch: {}/{}'.format(epoch_i + 1, EPOCHS_NUM),
+# 'cyan'))
 
-    batch_i = 0
-    for batch in generator(measurements_train, batch_size=BATCH_SIZE):
+#     batch_i = 0
+#     for batch in generator(measurements_train, batch_size=BATCH_SIZE):
 
-        X_train, y_train = process(batch)
+#         X_train, y_train = process(batch)
 
-        model.fit(X_train, y_train,
-                  batch_size=y_train.shape[0],
-                  nb_epoch=1,
-                  validation_data=(X_valid, y_valid),
-                  verbose=0,
-                  callbacks=[History()])
+#         model.fit(X_train, y_train,
+#                   batch_size=y_train.shape[0],
+#                   nb_epoch=1,
+#                   validation_data=(X_valid, y_valid),
+#                   verbose=0,
+#                   callbacks=[History()])
 
-        batch_i += 1
+#         batch_i += 1
 
-    # handle early termination
-    if len(val_losses) >= 2:
-        gain = val_losses[-2] - val_losses[-1]
-        print ('Validation Gain: {}'.format(gain))
-        if gain < DELTA:
-            print (colored('Early Termination !!!', 'red'))
-            quit()
+#     # handle early termination
+#     if len(val_losses) >= 2:
+#         gain = val_losses[-2] - val_losses[-1]
+#         print ('Validation Gain: {}'.format(gain))
+#         if gain < DELTA:
+#             print (colored('Early Termination !!!', 'red'))
+#             quit()
 
-    # save model after every epoch with improvement
-    model.save('model.h5')
-    print ('Model saved')
+#     # save model after every epoch with improvement
+#     model.save('model.h5')
+#     print ('Model saved')
 
+
+# for batch in generator(measurements_train, batch_size=BATCH_SIZE):
+
+#     print (batch[1].shape)
+
+
+model.fit_generator(generator(measurements_train, batch_size=BATCH_SIZE),
+                    samples_per_epoch=measurements_train.shape[0],
+                    nb_epoch=8,
+                    verbose=1,
+                    callbacks=[EarlyStopping(monitor='val_loss',
+                                             min_delta=0,
+                                             patience=0,
+                                             verbose=2,
+                                             mode='auto')],
+                    validation_data=(X_valid, y_valid),
+                    nb_val_samples=measurements_valid.shape[0],
+                    class_weight=None,
+                    max_q_size=10,
+                    nb_worker=1,
+                    pickle_safe=False,
+                    initial_epoch=0)
 
 # #pred  = model.predict(X_test, batch_size=128)
 # #print("Test error: ", np.mean(np.square(pred-Y_test)))
-

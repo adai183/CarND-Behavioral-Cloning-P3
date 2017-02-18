@@ -45,30 +45,25 @@ measurements_left['steering'] += 0.08
 measurements = pd.concat(
     [measurements_center, measurements_right, measurements_left])
 
-# # drop all 0 steering angles
-# measurements = measurements[measurements['steering'] != 0.0]
-
-print('writing')
-measurements.to_csv('Data/train_data.csv')
 
 # # drop columns with 0.0 steering angle
 # measurements = measurements[measurements['steering'] != 0.0]
 
 
-# # Data split: Train/Test/Validation
-# train_size = int(0.8 * measurements.shape[0])
-# valid_size = int(0.2 * measurements.shape[0])
+# Data split: Train/Test/Validation
+train_size = int(0.8 * measurements.shape[0])
+valid_size = int(0.2 * measurements.shape[0])
 # test_size = int(0.2 * measurements.shape[0])
-# # shuffle Data before creating batches
-# measurements = measurements.sample(frac=1)
+# shuffle Data before creating batches
+measurements = measurements.sample(frac=1)
 
+measurements_train = measurements[:train_size]
+measurements_valid = measurements[train_size:train_size + valid_size]
+# measurements_test = measurements[train_size + valid_size:]
 
-# measurements_valid = measurements[train_size:train_size + valid_size]
-#measurements_test = measurements[train_size + valid_size:]
+# clear cache
+del measurements_right, measurements_center, measurements_left, measurements
 
-# # clear cache
-# del measurements_right, measurements_center, measurements_left, measurements
-
-
-# measurements_valid.to_csv('Data/valid_data.csv')
+measurements_train.to_csv('Data/train_data.csv')
+measurements_valid.to_csv('Data/valid_data.csv')
 # measurements_test.to_csv('Data/test_data.csv')
