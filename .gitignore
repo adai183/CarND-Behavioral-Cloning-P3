@@ -1,0 +1,8 @@
+*.pickle
+*.npy
+*.zip
+/simulator
+/sample_data
+/Data
+/backup
+/IMG
