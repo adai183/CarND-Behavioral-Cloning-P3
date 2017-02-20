@@ -156,9 +156,6 @@ class History(Callback):
     Takes care of logging
     """
 
-    def on_train_begin(self, logs={}):
-        self.val_losses = []
-
     def on_batch_end(self, batch, logs={}):
         loss_temp = logs.get('loss')
         val_loss_temp = logs.get('val_loss')
@@ -177,16 +174,8 @@ class History(Callback):
 
         # save validation loss after every epoch for early termination
         if batch_i == batch_num - 1:
-            self.val_losses.append(val_loss_temp)
+            val_losses.append(val_loss_temp)
 
-    def on_epoch_end(self, epoch, logs={}):
-        self.val_losses.append(logs.get('val_loss'))
-        if len(self.val_losses) >= 2:
-            gain = self.val_losses[-2] - self.val_losses[-1]
-            print ('Validation Gain: {}'.format(gain))
-            if gain < DELTA:
-                print (colored('Early Termination !!!', 'red'))
-                quit()
 
 # with open('model.json', 'w') as outfile:
 #     outfile.write(model.to_json())
