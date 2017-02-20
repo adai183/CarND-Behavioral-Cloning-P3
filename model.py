@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 import cv2
 import math
+import scipy.misc
+import matplotlib.pyplot as plt
 
 from keras.models import Sequential
 from keras.layers.core import Dense, Activation, Flatten, Dropout
@@ -71,6 +73,7 @@ def generator(iterable, batch_size=512):
             batch = iterable.iloc[ndx:min(ndx + batch_size, img_num)]
 
             images, steering_angles = process(batch)
+
             yield (images, steering_angles)
 
 
@@ -112,18 +115,18 @@ model.add(Dropout(.5))
 
 # 5. Dense 100
 model.add(Dense(100, init='uniform'))
-#model.add(BatchNormalization())
+# model.add(BatchNormalization())
 model.add(Activation('elu'))
 
 
 # 6. Dense 50
 model.add(Dense(100, init='uniform'))
-#model.add(BatchNormalization())
+# model.add(BatchNormalization())
 model.add(Activation('elu'))
 
 # 7. Dense 10
 model.add(Dense(10, init='uniform'))
-#model.add(BatchNormalization())
+# model.add(BatchNormalization())
 model.add(Activation('elu'))
 
 # 8. Output
@@ -152,33 +155,27 @@ measurements_train = pd.DataFrame.from_csv('Data/train_data.csv')
 
 batch_num = math.ceil(measurements_train.shape[0] / BATCH_SIZE)
 
-model.fit_generator(generator(measurements_train, batch_size=BATCH_SIZE),
-                    samples_per_epoch=measurements_train.shape[0],
-                    nb_epoch=EPOCHS_NUM,
-                    verbose=1,
-                    callbacks=[EarlyStopping(monitor='val_loss',
-                                             min_delta=DELTA,
-                                             patience=2,
-                                             verbose=2,
-                                             mode='min'),
-                               ModelCheckpoint('best_model.h5',
-                                               monitor='val_loss',
-                                               verbose=1,
-                                               save_best_only=True,
-                                               mode='min',
-                                               period=1),
-                               CSVLogger('train_stats.csv')
-                               ],
-                    validation_data=(X_valid, y_valid),
-                    nb_val_samples=y_valid.shape[0])
+# model.fit_generator(generator(measurements_train, batch_size=BATCH_SIZE),
+#                     samples_per_epoch=measurements_train.shape[0],
+#                     nb_epoch=EPOCHS_NUM,
+#                     verbose=1,
+#                     callbacks=[EarlyStopping(monitor='val_loss',
+#                                              min_delta=DELTA,
+#                                              patience=2,
+#                                              verbose=2,
+#                                              mode='min'),
+#                                ModelCheckpoint('best_model.h5',
+#                                                monitor='val_loss',
+#                                                verbose=1,
+#                                                save_best_only=True,
+#                                                mode='min',
+#                                                period=1),
+#                                CSVLogger('train_stats.csv')
+#                                ],
+#                     validation_data=(X_valid, y_valid),
+#                     nb_val_samples=y_valid.shape[0])
 
 
-model.save('model.h5')
-print ('Model saved')
-
-
-# #pred  = model.predict(X_test, batch_size=128)
-# #print("Test error: ", np.mean(np.square(pred-Y_test)))
 
 end_time = time()
 time_taken = end_time - start_time  # time_taken is in seconds
