@@ -1,5 +1,4 @@
 import pandas as pd
-from tqdm import tqdm
 
 csv_path = 'Data/driving_log.csv'
 measurements = pd.DataFrame.from_csv(csv_path)
