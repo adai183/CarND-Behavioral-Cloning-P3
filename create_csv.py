@@ -57,7 +57,7 @@ for index, row in measurements.iterrows():
     oc = counts.loc[angle]
 
     if angle >= -0.08 and angle <= 0.08:
-        if oc > 2000:
+        if oc > 200:
             measurements = measurements.drop(row.name)
     i += 1
     print ('Processing Data: {}/{}'.format(i, measurements_length))
