@@ -10,22 +10,10 @@ from keras.layers.convolutional import Convolution2D
 from keras.layers.pooling import MaxPooling2D
 from keras.optimizers import Adam
 from keras.regularizers import l2
-from keras.callbacks import EarlyStopping
+from keras.callbacks import EarlyStopping, ModelCheckpoint, CSVLogger
 
 from time import time
 start_time = time()
-
-
-# def get_memory_stats():
-#     stats = dict()
-#     for var, obj in globals().items():
-#         stats[var] = getsizeof(obj)
-
-#     stats = sorted(stats.items(), key=lambda x: x[1], reverse=True)
-#     stats = pd.DataFrame(stats)
-
-#     return stats
-
 
 size1 = 64
 size2 = 96
@@ -147,56 +135,11 @@ BATCH_SIZE = 512
 
 # minimum change in validation loss after each epoch to qualify as an
 # improvement
-DELTA = 0.0
+DELTA = 0.001
 
 
 model.compile(optimizer=Adam(lr=LEARNING_RATE), loss='mse')
 print ('Model compiled.')
-
-
-# # Keras callbacks for logging and early termination
-# class History(Callback):
-#     """
-#     Takes care of logging
-#     """
-
-#     def on_train_begin(self, logs={}):
-#         self.val_losses = []
-
-#     def on_batch_end(self, batch, logs={}):
-#         loss_temp = logs.get('loss')
-#         val_loss_temp = logs.get('val_loss')
-
-#         # save stats to csv
-#         with open("stats.csv", "a") as csv_file:
-#             data = [epoch_i, loss_temp, val_loss_temp]
-#             writer = csv.writer(csv_file, delimiter=',')
-#             writer.writerow(data)
-
-#         # # log stats
-#         # print ('Epoch {}  :  Batch {}/{}'.format(
-#         #     epoch_i + 1, batch_i, batch_num))
-#         # print ('Loss:{}  Validation Loss:{}'.format(
-#         #     loss_temp, val_loss_temp))
-
-#         # save validation loss after every epoch for early termination
-#         # if batch_i == batch_num - 1:
-#         #     self.val_losses.append(val_loss_temp)
-
-#     def on_epoch_end(self, epoch, logs={}):
-#         self.val_losses.append(logs.get('val_loss'))
-#         if len(self.val_losses) >= 2:
-#             gain = self.val_losses[-2] - self.val_losses[-1]
-#             print ('Validation Gain: {}'.format(gain))
-#             if gain < DELTA:
-#                 print (colored('Early Termination !!!', 'red'))
-#                 quit()
-
-# with open('model.json', 'w') as outfile:
-#     outfile.write(model.to_json())
-
-# To open previous model weights
-# model.load_weights("model.h5")
 
 
 # Load validation data
@@ -207,64 +150,30 @@ X_valid, y_valid = process(measurements_valid)
 measurements_train = pd.DataFrame.from_csv('Data/train_data.csv')
 
 batch_num = math.ceil(measurements_train.shape[0] / BATCH_SIZE)
-# Keep track of validation losses to implement early termination
-val_losses = []
-gain = 0
-
-# for epoch_i in range(EPOCHS_NUM):
-
-# print (colored('Start epoch: {}/{}'.format(epoch_i + 1, EPOCHS_NUM),
-# 'cyan'))
-
-#     batch_i = 0
-#     for batch in generator(measurements_train, batch_size=BATCH_SIZE):
-
-#         X_train, y_train = process(batch)
-
-#         model.fit(X_train, y_train,
-#                   batch_size=y_train.shape[0],
-#                   nb_epoch=1,
-#                   validation_data=(X_valid, y_valid),
-#                   verbose=0,
-#                   callbacks=[History()])
-
-#         batch_i += 1
-
-#     # handle early termination
-#     if len(val_losses) >= 2:
-#         gain = val_losses[-2] - val_losses[-1]
-#         print ('Validation Gain: {}'.format(gain))
-#         if gain < DELTA:
-#             print (colored('Early Termination !!!', 'red'))
-#             quit()
-
-#     # save model after every epoch with improvement
-#     model.save('model.h5')
-#     print ('Model saved')
-
-
-# for batch in generator(measurements_train, batch_size=BATCH_SIZE):
-
-#     print (batch[1].shape)
-
 
 model.fit_generator(generator(measurements_train, batch_size=BATCH_SIZE),
                     samples_per_epoch=measurements_train.shape[0],
                     nb_epoch=8,
                     verbose=1,
                     callbacks=[EarlyStopping(monitor='val_loss',
-                                             min_delta=0.001,
+                                             min_delta=DELTA,
                                              patience=2,
                                              verbose=2,
-                                             mode='min')],
+                                             mode='min'),
+                               ModelCheckpoint('./Models',
+                                               monitor='val_loss',
+                                               verbose=2,
+                                               save_best_only=True,
+                                               mode='min',
+                                               period=1),
+                               CSVLogger('train_stats.csv')
+                               ],
                     validation_data=(X_valid, y_valid),
                     nb_val_samples=y_valid.shape[0])
 
 
 model.save('model.h5')
 print ('Model saved')
-
-
 
 
 # #pred  = model.predict(X_test, batch_size=128)
