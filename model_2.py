@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import cv2
 import math
+from termcolor import colored
 
 from keras.models import Sequential
 from keras.layers.core import Dense, Activation, Flatten, Dropout
@@ -148,43 +149,43 @@ model.compile(optimizer=Adam(lr=LEARNING_RATE), loss='mse')
 print ('Model compiled.')
 
 
-# # Keras callbacks for logging and early termination
-# class History(Callback):
-#     """
-#     Takes care of logging
-#     """
+# Keras callbacks for logging and early termination
+class History(Callback):
+    """
+    Takes care of logging
+    """
 
-#     def on_train_begin(self, logs={}):
-#         self.val_losses = []
+    def on_train_begin(self, logs={}):
+        self.val_losses = []
 
-#     def on_batch_end(self, batch, logs={}):
-#         loss_temp = logs.get('loss')
-#         val_loss_temp = logs.get('val_loss')
+    def on_batch_end(self, batch, logs={}):
+        loss_temp = logs.get('loss')
+        val_loss_temp = logs.get('val_loss')
 
-#         # save stats to csv
-#         with open("stats.csv", "a") as csv_file:
-#             data = [epoch_i, loss_temp, val_loss_temp]
-#             writer = csv.writer(csv_file, delimiter=',')
-#             writer.writerow(data)
+        # save stats to csv
+        with open("stats.csv", "a") as csv_file:
+            data = [epoch_i, loss_temp, val_loss_temp]
+            writer = csv.writer(csv_file, delimiter=',')
+            writer.writerow(data)
 
-#         # # log stats
-#         # print ('Epoch {}  :  Batch {}/{}'.format(
-#         #     epoch_i + 1, batch_i, batch_num))
-#         # print ('Loss:{}  Validation Loss:{}'.format(
-#         #     loss_temp, val_loss_temp))
+        # # log stats
+        # print ('Epoch {}  :  Batch {}/{}'.format(
+        #     epoch_i + 1, batch_i, batch_num))
+        # print ('Loss:{}  Validation Loss:{}'.format(
+        #     loss_temp, val_loss_temp))
 
-#         # save validation loss after every epoch for early termination
-#         # if batch_i == batch_num - 1:
-#         #     self.val_losses.append(val_loss_temp)
+        # save validation loss after every epoch for early termination
+        # if batch_i == batch_num - 1:
+        #     self.val_losses.append(val_loss_temp)
 
-#     def on_epoch_end(self, epoch, logs={}):
-#         self.val_losses.append(logs.get('val_loss'))
-#         if len(self.val_losses) >= 2:
-#             gain = self.val_losses[-2] - self.val_losses[-1]
-#             print ('Validation Gain: {}'.format(gain))
-#             if gain < DELTA:
-#                 print (colored('Early Termination !!!', 'red'))
-#                 quit()
+    def on_epoch_end(self, epoch, logs={}):
+        self.val_losses.append(logs.get('val_loss'))
+        if len(self.val_losses) >= 2:
+            gain = self.val_losses[-2] - self.val_losses[-1]
+            print ('Validation Gain: {}'.format(gain))
+            if gain < DELTA:
+                print (colored('Early Termination !!!', 'red'))
+                quit()
 
 # with open('model.json', 'w') as outfile:
 #     outfile.write(model.to_json())
@@ -207,8 +208,8 @@ gain = 0
 
 for epoch_i in range(EPOCHS_NUM):
 
-print (colored('Start epoch: {}/{}'.format(epoch_i + 1, EPOCHS_NUM),
-'cyan'))
+    print (colored('Start epoch: {}/{}'.format(epoch_i + 1, EPOCHS_NUM),
+                   'cyan'))
 
     batch_i = 0
     for batch in generator(measurements_train, batch_size=BATCH_SIZE):
@@ -235,9 +236,6 @@ print (colored('Start epoch: {}/{}'.format(epoch_i + 1, EPOCHS_NUM),
     # save model after every epoch with improvement
     model.save('model.h5')
     print ('Model saved')
-
-
-
 
 
 # #pred  = model.predict(X_test, batch_size=128)
