@@ -71,7 +71,7 @@ measurements = pd.concat(
 train_size = int(0.8 * measurements.shape[0])
 valid_size = int(0.2 * measurements.shape[0])
 # test_size = int(0.2 * measurements.shape[0])
-# shuffle Data before creating batches
+# shuffle data before creating batches
 measurements = measurements.sample(frac=1)
 
 measurements_train = measurements[:train_size]
