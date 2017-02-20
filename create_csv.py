@@ -1,4 +1,5 @@
 import pandas as pd
+from tqdm import tqdm
 
 csv_path = 'Data/driving_log.csv'
 measurements = pd.DataFrame.from_csv(csv_path)
@@ -46,8 +47,20 @@ measurements = pd.concat(
     [measurements_center, measurements_right, measurements_left])
 
 
-# # drop columns with 0.0 steering angle
-# measurements = measurements[measurements['steering'] != 0.0]
+# decrease most frequent steering angles
+i = 0
+measurements_length = measurements.shape[0]
+for index, row in measurements.iterrows():
+    counts = measurements['steering'].value_counts()
+    oc = counts.loc[row['steering']]
+
+    if oc > 50:
+        measurements = measurements.drop(row.name)
+
+    print ('Processing Data: {}/{}'.format(i, measurements_length))
+    i +=1
+
+# measurements = measurements[measurements['steering']!=0.0]
 
 
 # Data split: Train/Test/Validation

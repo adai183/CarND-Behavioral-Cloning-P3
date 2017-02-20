@@ -5,11 +5,12 @@ import math
 
 from keras.models import Sequential
 from keras.layers.core import Dense, Activation, Flatten, Dropout
+from keras.layers import BatchNormalization
 from keras.layers.convolutional import Convolution2D
 from keras.layers.pooling import MaxPooling2D
 from keras.optimizers import Adam
 from keras.regularizers import l2
-from keras.callbacks import Callback, EarlyStopping
+from keras.callbacks import EarlyStopping
 
 from time import time
 start_time = time()
@@ -69,19 +70,20 @@ def process(data):
 
 def generator(iterable, batch_size=512):
     """
-    @data: pd.DataFrame
+    @iterable: pd.DataFrame
     """
 
     img_num = iterable.shape[0]
 
-    # shuffle Data before creating batches
-    iterable = iterable.sample(frac=1)
+    while True:
+        # shuffle Data before creating batches
+        iterable = iterable.sample(frac=1)
 
-    for ndx in range(0, img_num, batch_size):
-        batch = iterable.iloc[ndx:min(ndx + batch_size, img_num)]
+        for ndx in range(0, img_num, batch_size):
+            batch = iterable.iloc[ndx:min(ndx + batch_size, img_num)]
 
-        images, steering_angles = process(batch)
-        yield (images, steering_angles)
+            images, steering_angles = process(batch)
+            yield (images, steering_angles)
 
 
 model = Sequential()
@@ -116,19 +118,23 @@ model.add(Dropout(.5))
 
 # # 6. Dense 1064
 # model.add(Dense(1064, init='uniform'))
+# model.add(BatchNormalization())
 # model.add(Activation('elu'))
 
 # 5. Dense 100
 model.add(Dense(100, init='uniform'))
+model.add(BatchNormalization())
 model.add(Activation('elu'))
 
 
 # 6. Dense 50
 model.add(Dense(100, init='uniform'))
+model.add(BatchNormalization())
 model.add(Activation('elu'))
 
 # 7. Dense 10
 model.add(Dense(10, init='uniform'))
+model.add(BatchNormalization())
 model.add(Activation('elu'))
 
 # 8. Output
@@ -252,12 +258,7 @@ model.fit_generator(generator(measurements_train, batch_size=BATCH_SIZE),
                                              verbose=2,
                                              mode='auto')],
                     validation_data=(X_valid, y_valid),
-                    nb_val_samples=y_valid.shape[0],
-                    class_weight=None,
-                    max_q_size=10,
-                    nb_worker=1,
-                    pickle_safe=False,
-                    initial_epoch=0)
+                    nb_val_samples=y_valid.shape[0])
 
 
 
