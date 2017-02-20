@@ -46,24 +46,24 @@ measurements = pd.concat(
     [measurements_center, measurements_right, measurements_left])
 
 
-# # decrease most frequent steering angles
-# i = 0
-# measurements_length = measurements.shape[0]
-# for index, row in measurements.iterrows():
-#     counts = measurements['steering'].value_counts()
-#     angle = row['steering']
-#     oc = counts.loc[angle]
+# decrease most frequent steering angles
+i = 0
+measurements_length = measurements.shape[0]
+for index, row in measurements.iterrows():
+    counts = measurements['steering'].value_counts()
+    angle = row['steering']
+    oc = counts.loc[angle]
 
-#     if angle >= -0.08 and angle <= 0.08:
-#         if oc > 2000:
-#             measurements = measurements.drop(row.name)
-#     i += 1
-#     print ('Processing Data: {}/{}'.format(i, measurements_length))
+    if angle >= -0.08 and angle <= 0.08:
+        if oc > 2000:
+            measurements = measurements.drop(row.name)
+    i += 1
+    print ('Processing Data: {}/{}'.format(i, measurements_length))
 
 
-measurements = measurements[measurements['steering']!=0.0]
-measurements = measurements[measurements['steering']!=0.08]
-measurements = measurements[measurements['steering']!=-0.08]
+# measurements = measurements[measurements['steering']!=0.0]
+# measurements = measurements[measurements['steering']!=0.08]
+# measurements = measurements[measurements['steering']!=-0.08]
 
 
 # Data split: Train/Test/Validation
