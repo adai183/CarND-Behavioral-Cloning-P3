@@ -253,10 +253,10 @@ model.fit_generator(generator(measurements_train, batch_size=BATCH_SIZE),
                     nb_epoch=8,
                     verbose=1,
                     callbacks=[EarlyStopping(monitor='val_loss',
-                                             min_delta=0,
+                                             min_delta=0.001,
                                              patience=2,
                                              verbose=2,
-                                             mode='auto')],
+                                             mode='min')],
                     validation_data=(X_valid, y_valid),
                     nb_val_samples=y_valid.shape[0])
 
