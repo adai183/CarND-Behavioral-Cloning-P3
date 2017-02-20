@@ -175,7 +175,7 @@ class History(Callback):
         print ('Loss:{}  Validation Loss:{}'.format(
             loss_temp, val_loss_temp))
 
-        save validation loss after every epoch for early termination
+        # save validation loss after every epoch for early termination
         if batch_i == batch_num - 1:
             self.val_losses.append(val_loss_temp)
 
