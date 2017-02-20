@@ -74,7 +74,7 @@ def generator(iterable, batch_size=512):
 
 model = Sequential()
 
-model.add(Lambda(lambda x: x / 255.0 - 0.5), input_shape=(size1, size2, 3))
+model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(size1, size2, 3)))
 
 model.add(Convolution2D(6, 5, 5, activation='relu'))
 model.add(MaxPooling2D())
