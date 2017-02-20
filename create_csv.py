@@ -47,30 +47,20 @@ measurements = pd.concat(
     [measurements_center, measurements_right, measurements_left])
 
 
-# Add flipped images
+# decrease most frequent steering angles
+i = 0
+measurements_length = measurements.shape[0]
+
 for index, row in measurements.iterrows():
-    fn = row.name
-    img = cv2.imread('Data/IMG/' + fn)
-    img = cv2.flip(img, 1)
-    row['steering'] = row['steering'] * -1.0
+    counts = measurements['steering'].value_counts()
+    angle = row['steering']
+    oc = counts.loc[angle]
 
-# images[i, :, :, :] = cv2.flip(images[i, :, :, :], 1)
-# row['steering'] = - row['steering']
-
-# # decrease most frequent steering angles
-# i = 0
-# measurements_length = measurements.shape[0]
-
-# for index, row in measurements.iterrows():
-#     counts = measurements['steering'].value_counts()
-#     angle = row['steering']
-#     oc = counts.loc[angle]
-
-#     if angle >= -0.08 and angle <= 0.08:
-#         if oc > 2000:
-#             measurements = measurements.drop(row.name)
-#     i += 1
-#     print ('Processing Data: {}/{}'.format(i, measurements_length))
+    if angle >= -0.08 and angle <= 0.08:
+        if oc > 2000:
+            measurements = measurements.drop(row.name)
+    i += 1
+    print ('Processing Data: {}/{}'.format(i, measurements_length))
 
 
 # measurements = measurements[measurements['steering']!=0.0]
