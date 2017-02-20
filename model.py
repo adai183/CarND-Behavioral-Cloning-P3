@@ -261,6 +261,11 @@ model.fit_generator(generator(measurements_train, batch_size=BATCH_SIZE),
                     nb_val_samples=y_valid.shape[0])
 
 
+model.save('model.h5')
+print ('Model saved')
+
+
+
 
 # #pred  = model.predict(X_test, batch_size=128)
 # #print("Test error: ", np.mean(np.square(pred-Y_test)))
