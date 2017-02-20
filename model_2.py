@@ -156,7 +156,7 @@ class History(Callback):
     Takes care of logging
     """
 
-    def on_batch_end(self, batch, logs={}):
+    def on_epoch_end(self, epoch, logs={}):
         loss_temp = logs.get('loss')
         val_loss_temp = logs.get('val_loss')
 
