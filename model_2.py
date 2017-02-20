@@ -3,6 +3,7 @@ import pandas as pd
 import cv2
 import math
 from termcolor import colored
+import csv 
 
 from keras.models import Sequential
 from keras.layers.core import Dense, Activation, Flatten, Dropout
@@ -81,8 +82,8 @@ def generator(iterable, batch_size=512):
     for ndx in range(0, img_num, batch_size):
         batch = iterable.iloc[ndx:min(ndx + batch_size, img_num)]
 
-        images, steering_angles = process(batch)
-        yield (images, steering_angles)
+        #images, steering_angles = process(batch)
+        yield batch
 
 
 model = Sequential()
