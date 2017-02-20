@@ -51,13 +51,15 @@ i = 0
 measurements_length = measurements.shape[0]
 for index, row in measurements.iterrows():
     counts = measurements['steering'].value_counts()
-    oc = counts.loc[row['steering']]
+    angle = row['steering']
+    oc = counts.loc[angle]
 
-    if oc > 50:
-        measurements = measurements.drop(row.name)
-
+    if angle >= -0.08 and angle <= 0.08:
+        if oc > 1000:
+            measurements = measurements.drop(row.name)
+    i += 1
     print ('Processing Data: {}/{}'.format(i, measurements_length))
-    i +=1
+
 
 # measurements = measurements[measurements['steering']!=0.0]
 
