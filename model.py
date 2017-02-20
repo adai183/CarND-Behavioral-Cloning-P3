@@ -153,7 +153,7 @@ batch_num = math.ceil(measurements_train.shape[0] / BATCH_SIZE)
 
 model.fit_generator(generator(measurements_train, batch_size=BATCH_SIZE),
                     samples_per_epoch=measurements_train.shape[0],
-                    nb_epoch=8,
+                    nb_epoch=EPOCHS_NUM,
                     verbose=1,
                     callbacks=[EarlyStopping(monitor='val_loss',
                                              min_delta=DELTA,
