@@ -43,7 +43,7 @@ def process(data):
         # randomly choose to flip the image, and invert the steering angle.
         if np.random.uniform() > 0.5 and row['steering'] != 0.0:
             images[i, :, :, :] = cv2.flip(images[i, :, :, :], 1)
-            row['steering'] = - row['steering']
+            row['steering'] = row['steering'] * -1.0
 
         steering_angles[i] = row['steering']
 

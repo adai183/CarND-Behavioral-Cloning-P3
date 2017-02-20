@@ -1,4 +1,5 @@
 import pandas as pd
+import cv2
 
 csv_path = 'Data/driving_log.csv'
 measurements = pd.DataFrame.from_csv(csv_path)
@@ -45,6 +46,16 @@ measurements_left['steering'] += 0.08
 measurements = pd.concat(
     [measurements_center, measurements_right, measurements_left])
 
+
+# Add flipped images
+for index, row in measurements.iterrows():
+    fn = row.name
+    img = cv2.imread('Data/IMG/' + fn)
+    img = cv2.flip(img, 1)
+    row['steering'] = row['steering'] * -1.0
+
+# images[i, :, :, :] = cv2.flip(images[i, :, :, :], 1)
+# row['steering'] = - row['steering']
 
 # # decrease most frequent steering angles
 # i = 0
