@@ -152,10 +152,10 @@ X_valid, y_valid = process(measurements_valid)
 # Load Dataframe for training data
 measurements_train = pd.DataFrame.from_csv('Data/train_data.csv')
 
-batch_num = math.ceil(measurements_train.shape[0] / BATCH_SIZE)
+batch_num = math.ceil(measurements_train.shape[0] * 2 / BATCH_SIZE)
 
 model.fit_generator(generator(measurements_train, batch_size=BATCH_SIZE),
-                    samples_per_epoch=measurements_train.shape[0],
+                    samples_per_epoch=measurements_train.shape[0] * 2,
                     nb_epoch=EPOCHS_NUM,
                     verbose=1,
                     callbacks=[EarlyStopping(monitor='val_loss',
@@ -172,7 +172,7 @@ model.fit_generator(generator(measurements_train, batch_size=BATCH_SIZE),
                                CSVLogger('train_stats.csv')
                                ],
                     validation_data=(X_valid, y_valid),
-                    nb_val_samples=y_valid.shape[0])
+                    nb_val_samples=y_valid.shape[0] * 2)
 
 
 end_time = time()
