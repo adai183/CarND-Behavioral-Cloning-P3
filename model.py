@@ -80,6 +80,7 @@ model = Sequential()
 model.add(Convolution2D(1, 1, 1, border_mode='same',
                         init='glorot_uniform', input_shape=(size1, size2, 3)))
 
+
 # 1. Convolutional, kernel(3,3) - Output 24
 model.add(Convolution2D(24, 3, 3, border_mode='valid',
                         init='glorot_uniform', W_regularizer=l2(0.01)))
