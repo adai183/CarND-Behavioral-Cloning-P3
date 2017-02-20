@@ -169,15 +169,15 @@ class History(Callback):
             writer = csv.writer(csv_file, delimiter=',')
             writer.writerow(data)
 
-        # # log stats
-        # print ('Epoch {}  :  Batch {}/{}'.format(
-        #     epoch_i + 1, batch_i, batch_num))
-        # print ('Loss:{}  Validation Loss:{}'.format(
-        #     loss_temp, val_loss_temp))
+        # log stats
+        print ('Epoch {}  :  Batch {}/{}'.format(
+            epoch_i + 1, batch_i, batch_num))
+        print ('Loss:{}  Validation Loss:{}'.format(
+            loss_temp, val_loss_temp))
 
-        # save validation loss after every epoch for early termination
-        # if batch_i == batch_num - 1:
-        #     self.val_losses.append(val_loss_temp)
+        save validation loss after every epoch for early termination
+        if batch_i == batch_num - 1:
+            self.val_losses.append(val_loss_temp)
 
     def on_epoch_end(self, epoch, logs={}):
         self.val_losses.append(logs.get('val_loss'))
