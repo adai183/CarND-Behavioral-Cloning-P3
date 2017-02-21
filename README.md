@@ -7,6 +7,10 @@
 In this Project we were asked to design a system that drives a car autonomously in a simulated environment.
 
 
+
+
+
+
 Illustration of the simulator
 ![alt text][image1]
 
@@ -77,17 +81,17 @@ This way our model learned what to do when it encounters a dirt road.
 
 #7. Image augmentation
 
-###7.1 Center and lateral images
+##7.1 Center and lateral images
 
 I used images from all three cameras.
 I added a correction angle of 0.10 to the left image, and -0.10 to the right one. The idea is to center the car, avoid the borders.
  
  
-##7.2 Flip images
+#7.2 Flip images
  
  I flipped all images, and inverted the steering angle. This way, we can neutralize some tendency of the human driver that drove a bit more to the left or to the right of the lane. We double the amount of training data and our model generalizes better.
  
-###7.3 Crop 
+##7.3 Crop 
 The image was cropped to remove irrelevant portions of the image, like the sky, or the trees. 
 
 ##7.4 Resize
