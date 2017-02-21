@@ -7,16 +7,12 @@ import matplotlib.pyplot as plt
 model = load_model('model.h5')
 plot(model, to_file='model.png', show_layer_names=False, show_shapes=True)
 
-# # training viz
-# csv_path = 'stats.csv'
-# df = pd.DataFrame.from_csv(csv_path)
-# df['i'] = pd.Series(range(df.shape[0]), index=df.index)
-# df = df.set_index('i', drop=True)
-# df = df.drop(['Batch'], 1)
-# # df.plot(use_index=True)
-# # plt.show()
+# training viz
+csv_path = 'train_stats.csv'
+df = pd.DataFrame.from_csv(csv_path)
+df.plot()
 
 # x = df.index
-# plt.plot(x, df['Loss'])
-# plt.plot(x, df['Validation Loss'])
-# plt.savefig('img/train_stats.png')
+# plt.plot(x, df['loss'])
+# plt.plot(x, df['val_loss'])
+plt.savefig('train_stats.png')
