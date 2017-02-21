@@ -1,7 +1,7 @@
 #**Behavioral-Cloning** 
 ###Teaching a car to drive itself
 
-#1. Objective 
+##1. Objective 
 
 
 In this Project we were asked to design a system that drives a car autonomously in a simulated environment.
@@ -34,7 +34,7 @@ as the training signal. We never explicitly train it to detect, for example, the
 of roads.
 
 
-#3.Model Architecture 
+##3.Model Architecture 
 
 ![alt text][image2]
 
@@ -51,7 +51,7 @@ value which is the normalized steering angle. The fully connected layers are des
 The model includes ELU layers to introduce nonlinearity.
 
 
-#4. Attempts to reduce overfitting in the model
+##4. Attempts to reduce overfitting in the model
 
 The model contains a dropout layer after the flatten layer in order to reduce overfitting.
 
@@ -65,7 +65,7 @@ I implemented early termination to get the correct number of epochs.
 ![alt text][image3]
 
 
-#6. Training Details
+##6. Training Details
 
 I used the training data provided by Udacity in combination with extra data I recorded to teach the car how to drive safely through the more challenging parts of the track.
 The training data provided was strongly biased towards zero or small steering angles. I drastically decreased the frequency of steering angles in the range from -0.08 to 0.08. This way my modeled was able to learn sharp turns.
@@ -77,27 +77,27 @@ Than I turned the wheel toward the center of the road  and recorded the data whi
 This way our model learned what to do when it encounters a dirt road.
 
 
-#7. Image augmentation
+##7. Image augmentation
 
-##7.1 Center and lateral images
+###7.1 Center and lateral images
 
 I used images from all three cameras.
 I added a correction angle of 0.10 to the left image, and -0.10 to the right one. The idea is to center the car, avoid the borders.
  
  
-##7.2 Flip images
+###7.2 Flip images
  
  I flipped all images, and inverted the steering angle. This way, we can neutralize some tendency of the human driver that drove a bit more to the left or to the right of the lane. We double the amount of training data and our model generalizes better.
  
-##7.3 Crop 
+###7.3 Crop 
 The image was cropped to remove irrelevant portions of the image, like the sky, or the trees. 
 
-##7.4 Resize
+###7.4 Resize
 
 Because of computational limits, it is a good thing to resize the images, after cropping it. I scaled the images down to half of their size
 
 
-##7.5 Normalization
+###7.5 Normalization
 Normalization is made because the neural network usually works with small numbers.
 
 
