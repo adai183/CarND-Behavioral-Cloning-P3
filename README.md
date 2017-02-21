@@ -1,15 +1,13 @@
 #**Behavioral-Cloning** 
-###Teaching a car to drive himself
+###Teaching a car to drive itself
 
 #1. Objective 
 
 
 In this Project we were asked to design a system that drives a car autonomously in a simulated environment.
 
-
-
-
-
+<br>
+<br>
 
 Illustration of the simulator
 ![alt text][image1]
