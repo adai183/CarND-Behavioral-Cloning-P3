@@ -85,7 +85,7 @@ I used images from all three cameras.
 I added a correction angle of 0.10 to the left image, and -0.10 to the right one. The idea is to center the car, avoid the borders.
  
  
-#7.2 Flip images
+##7.2 Flip images
  
  I flipped all images, and inverted the steering angle. This way, we can neutralize some tendency of the human driver that drove a bit more to the left or to the right of the lane. We double the amount of training data and our model generalizes better.
  
