@@ -114,18 +114,18 @@ model.add(Dropout(.5))
 
 # 5. Dense 100
 model.add(Dense(100, init='uniform'))
-# model.add(BatchNormalization())
+model.add(BatchNormalization())
 model.add(Activation('elu'))
 
 
 # 6. Dense 50
 model.add(Dense(100, init='uniform'))
-# model.add(BatchNormalization())
+model.add(BatchNormalization())
 model.add(Activation('elu'))
 
 # 7. Dense 10
 model.add(Dense(10, init='uniform'))
-# model.add(BatchNormalization())
+model.add(BatchNormalization())
 model.add(Activation('elu'))
 
 # 8. Output
@@ -163,7 +163,7 @@ model.fit_generator(generator(measurements_train, batch_size=BATCH_SIZE),
                                              patience=2,
                                              verbose=2,
                                              mode='min'),
-                               ModelCheckpoint('best_model.h5',
+                               ModelCheckpoint('model.h5',
                                                monitor='val_loss',
                                                verbose=1,
                                                save_best_only=True,
