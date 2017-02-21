@@ -25,7 +25,7 @@ The ultimate goal is to create a deep neural network to emulate the behavior of 
 [image3]: train_stats.png "Training stats"
 
 
-#2. Strategy: 
+##2. Strategy: 
 My approach is based on the [NVIDIA End-to-End Slouttion](https://arxiv.org/abs/1604.07316)
 I trained a convolutional neural network (CNN) to map raw pixels from the simulator directly to steering commands. 
 The system should automatically learn internal representations of the necessary processing
@@ -57,7 +57,7 @@ The model contains a dropout layer after the flatten layer in order to reduce ov
 
 The model was trained and validated on different data sets to ensure that the model was not overfitting. The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
-#5. Model parameter tuning
+##5. Model parameter tuning
 
 The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
 I implemented early termination to get the correct number of epochs.
